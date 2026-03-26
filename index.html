@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Talks Event Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .search-container input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        .search-container input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .schedule {
+            display: grid;
+            gap: 20px;
+        }
+        .talk-card, .lunch-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #3498db;
+            transition: transform 0.2s ease-in-out;
+        }
+        .talk-card:hover {
+            transform: translateY(-3px);
+        }
+        .lunch-card {
+            border-left: 5px solid #e67e22;
+            background-color: #fff3e6;
+        }
+        .talk-card h2, .lunch-card h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .talk-card h3 {
+            font-size: 16px;
+            color: #555;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .talk-card .time, .lunch-card .time {
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .talk-card .speakers, .talk-card .categories {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        .talk-card .categories span {
+            display: inline-block;
+            background-color: #ecf0f1;
+            color: #555;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .talk-card p {
+            line-height: 1.6;
+            color: #444;
+        }
+        .no-talks-message {
+            text-align: center;
+            color: #777;
+            font-size: 1.1em;
+            padding: 40px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .talk-card h2, .lunch-card h2 {
+                font-size: 20px;
+            }
+            .search-container input {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Technical Talks Event Schedule</h1>
+
+        <div class="search-container">
+            <input type="search" id="category-search" placeholder="Search by category (e.g., AI, Web, Cloud)">
+        </div>
+
+        <div class="schedule" id="schedule-container">
+            <!-- Schedule items will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const talksData = [
+            {
+                title: "Introduction to WebAssembly",
+                speakers: ["Dr. Anya Sharma"],
+                categories: ["Web Development", "Performance"],
+                duration: 60, // minutes
+                description: "Explore the basics of WebAssembly, its benefits for web performance, and how it's changing the landscape of browser-based applications. We'll cover use cases, tooling, and future prospects."
+            },
+            {
+                title: "Modern JavaScript Features: ES2024 and Beyond",
+                speakers: ["Brijesh Kumar", "Sarah Chen"],
+                categories: ["JavaScript", "Web Development", "Frontend"],
+                duration: 60,
+                description: "Dive deep into the latest features of JavaScript. From new syntax to powerful APIs, this talk will show you how to write cleaner, more efficient, and more maintainable code."
+            },
+            {
+                title: "Cloud Native Architectures with Kubernetes",
+                speakers: ["David Lopez"],
+                categories: ["Cloud", "DevOps", "Kubernetes"],
+                duration: 60,
+                description: "Learn how to design and implement robust, scalable, and resilient cloud-native applications using Kubernetes. We'll discuss best practices for deployment, scaling, and monitoring."
+            },
+            {
+                title: "Demystifying AI: Practical Applications for Developers",
+                speakers: ["Emily White"],
+                categories: ["AI", "Machine Learning", "Development"],
+                duration: 60,
+                description: "This talk cuts through the hype to provide a practical guide to integrating AI and Machine Learning into your projects. We'll look at real-world examples and accessible tools."
+            },
+            {
+                title: "Securing Your Node.js Applications",
+                speakers: ["Frank Green"],
+                categories: ["Node.js", "Security", "Backend"],
+                duration: 60,
+                description: "A comprehensive guide to identifying and mitigating common security vulnerabilities in Node.js applications. Learn about authentication, authorization, data validation, and more."
+            },
+            {
+                title: "Data Visualization with D3.js and React",
+                speakers: ["Grace Hopper", "Ivan Pavlov"],
+                categories: ["Data Science", "Frontend", "React"],
+                duration: 60,
+                description: "Combine the power of D3.js for complex data visualizations with the declarative nature of React. This talk will walk you through building interactive and performant dashboards."
+            }
+        ];
+
+        const eventStartTime = new Date();
+        eventStartTime.setHours(10, 0, 0, 0); // Event starts at 10:00 AM
+
+        const talkDurationMinutes = 60;
+        const transitionMinutes = 10;
+        const lunchDurationMinutes = 60;
+
+        const scheduleContainer = document.getElementById('schedule-container');
+        const searchInput = document.getElementById('category-search');
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderSchedule(filteredTalks = talksData) {
+            scheduleContainer.innerHTML = ''; // Clear previous schedule
+
+            if (filteredTalks.length === 0) {
+                scheduleContainer.innerHTML = '<p class="no-talks-message">No talks found matching your search criteria.</p>';
+                return;
+            }
+
+            let currentTime = new Date(eventStartTime.getTime());
+            let talkIndex = 0;
+
+            for (let i = 0; i < 6; i++) { // Loop for 6 talks
+                // Add talk
+                const talk = filteredTalks[talkIndex];
+                if (talk) { // Ensure there's a talk to display
+                    const talkStart = new Date(currentTime.getTime());
+                    const talkEnd = new Date(talkStart.getTime() + talkDurationMinutes * 60 * 1000);
+
+                    const talkCard = document.createElement('div');
+                    talkCard.className = 'talk-card';
+                    talkCard.innerHTML = `
+                        <span class="time">${formatTime(talkStart)} - ${formatTime(talkEnd)}</span>
+                        <h2>${talk.title}</h2>
+                        <h3>Speakers: ${talk.speakers.join(', ')}</h3>
+                        <div class="categories">
+                            ${talk.categories.map(cat => `<span>${cat}</span>`).join('')}
+                        </div>
+                        <p>${talk.description}</p>
+                    `;
+                    scheduleContainer.appendChild(talkCard);
+
+                    currentTime = new Date(talkEnd.getTime());
+                } else {
+                    // If less than 6 talks are filtered, stop here.
+                    break;
+                }
+
+
+                // Add transition after talk, if it's not the last talk
+                if (talkIndex < 5) {
+                    currentTime.setMinutes(currentTime.getMinutes() + transitionMinutes);
+                }
+
+                // Insert lunch break after the 3rd talk (0-indexed: index 2)
+                if (talkIndex === 2) {
+                    const lunchStart = new Date(currentTime.getTime());
+                    const lunchEnd = new Date(lunchStart.getTime() + lunchDurationMinutes * 60 * 1000);
+
+                    const lunchCard = document.createElement('div');
+                    lunchCard.className = 'lunch-card';
+                    lunchCard.innerHTML = `
+                        <span class="time">${formatTime(lunchStart)} - ${formatTime(lunchEnd)}</span>
+                        <h2>Lunch Break</h2>
+                        <p>Enjoy a delicious meal and network with fellow attendees!</p>
+                    `;
+                    scheduleContainer.appendChild(lunchCard);
+
+                    currentTime = new Date(lunchEnd.getTime());
+                    // Add transition after lunch
+                    currentTime.setMinutes(currentTime.getMinutes() + transitionMinutes);
+                }
+                talkIndex++;
+            }
+        }
+
+        function filterTalks() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = talksData.filter(talk =>
+                talk.categories.some(category =>
+                    category.toLowerCase().includes(searchTerm)
+                )
+            );
+            renderSchedule(filtered);
+        }
+
+        // Initial render and event listener setup
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSchedule();
+            searchInput.addEventListener('input', filterTalks);
+        });
+    </script>
+</body>
+</html>

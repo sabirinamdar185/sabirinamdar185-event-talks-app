@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+dist/
+build/
+
+# Java/Eclipse
+.classpath
+.project
+.settings/
+target/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Gemini CLI
+.gemini/
+
+# Log files
+*.log
+
+# Temporary files
+*~
